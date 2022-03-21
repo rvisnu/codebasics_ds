@@ -1,0 +1,65 @@
+class HashTable:  
+    def __init__(self):
+        self.MAX = 10
+        self.arr = [[] for i in range(self.MAX)]
+    
+    def _get_hash(self, key):
+        hash = 0
+        for char in key:
+            hash += ord(char)
+        return hash%10
+    
+    def __getitem__(self, key):
+        hashkey = self._get_hash(key)
+        for item in self.arr:
+            if item and item[0] == key:
+                return item[1]
+    
+    def __setitem__(self, key, value):
+        hashkey = self._get_hash(key)
+        loop_count = 0
+        loop_range = [n for n in range(hashkey, self.MAX)] + [n for n in range(0, hashkey)]
+        """ while self.arr[hashkey]:
+            # not to search for hash indefinitely
+            if loop_count <= self.MAX:
+                loop_count+= 1
+                
+                hashkey = (hashkey+1) if hashkey < self.MAX-1 else (hashkey+1)%self.MAX
+                 
+            else:
+                raise Exception("No space in hashmap")"""
+        for location in loop_range:
+            if not self.arr[location]:
+                self.arr[location].append((key))
+                self.arr[location].append((value))
+                return
+        raise Exception("No space in hashmap")
+    
+    def __delitem__(self, key):
+        for index,item in enumerate(self.arr):
+            if item and item[0] == key:
+                self.arr[index] = []
+                break
+
+        
+t = HashTable()
+print(t.arr)
+t["jan 1"] = 15
+t["jan 2"] = 16
+t["jan 3"] = 17
+t["jan 12"] = 18
+t["jan 13"] = 19
+t["jan 14"] = 20
+t["jan 19"] = 21
+t["jan 1l"] = 15
+t["jan 2p"] = 16
+t["jan 3m"] = 17
+
+del t["jan 19"]
+t["jan 3mo"] = 17
+# t["jan 3ma"] = 17
+print(t.arr)
+print(t["jan 14"])
+
+    
+    
