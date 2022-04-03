@@ -1,0 +1,154 @@
+"""
+Data structures exercise: General Tree
+Below is the management hierarchy of a company.
+
+Nilupul (CEO)
+  |--Chinmay (CTO)
+    |--Vishwa (Infrastructure Head)
+      |--Dhawal (Cloud Manager)
+      |--Abhijit (App Manager)
+    |--Aamir (Application Head)
+  |--Gels (HR Head)
+    |--Peter (Recruitment Manager)
+    |--Waqas (Policy Manager)
+
+Extent tree class built in our main tutorial so that it takes name and designation in data part of TreeNode class. Now extend print_tree function such that it can print either name tree, designation tree or name and designation tree. As shown below,
+
+
+
+Here is how your main function should will look like,
+
+if __name__ == '__main__':
+    root_node = build_management_tree()
+    root_node.print_tree("name") # prints only name hierarchy
+    root_node.print_tree("designation") # prints only designation hierarchy
+    root_node.print_tree("both") # prints both (name and designation) hierarchy
+    
+Nilupul
+  |--Chinmay
+    |--Vishwa
+      |--Dhawal
+      |--Abhijit
+    |--Aamir
+  |--Gels
+    |--Peter
+    |--Waqas
+----------------------------------------------------------------------------------------------------
+CEO
+  |--CTO
+    |--Infrastructure Head
+      |--Cloud Manager
+      |--App Manager
+    |--Application Head
+  |--HR Head
+    |--Recruitment Manager
+    |--Policy Manager
+----------------------------------------------------------------------------------------------------
+Nilupul (CEO)
+  |--Chinmay (CTO)
+    |--Vishwa (Infrastructure Head)
+      |--Dhawal (Cloud Manager)
+      |--Abhijit (App Manager)
+    |--Aamir (Application Head)
+  |--Gels (HR Head)
+    |--Peter (Recruitment Manager)
+    |--Waqas (Policy Manager)    
+
+"""
+
+class OrgTree:
+    def __init__(self):
+        self.ReportingTo = None
+        self.Org = []
+        self.Name = None
+        self.Title = None
+    
+    def add_member(self, new_member):
+        new_member.ReportingTo = self
+        self.Org.append(new_member)
+    
+    def get_level(self):
+        if not self.ReportingTo:
+            return 0
+        while self.ReportingTo:
+            self = self.ReportingTo
+            return 1 + self.get_level()
+    
+    def print_org_tree(self, type="name"):
+
+        decorations = "|--"
+        space = "  "
+        if not self.ReportingTo:
+            if type.lower() == "title":
+                print(self.Title)
+            elif type.lower() == "both":
+                print(f"{self.Name} ({self.Title})")
+            else:
+                print(self.Name)
+        for item in self.Org:
+            append = (space*item.get_level()+decorations)
+            if type.lower() == "title":
+                print(append+item.Title)
+            elif type.lower() == "both":
+                printable = f"{item.Name} ({item.Title})"
+                print(append+printable)
+            else:
+                print(append+item.Name)
+            if item.Org:
+                item.print_org_tree(type)
+
+
+if __name__ == "__main__":
+    my_org = OrgTree()
+    my_org.Name = "Nilupul"
+    my_org.Title = "CEO"
+    
+    cto = OrgTree()
+    cto.Name = "Chinmay"
+    cto.Title = "CTO"
+    my_org.add_member(cto)
+    
+    infra_head = OrgTree()
+    infra_head.Name = "Vishwa"
+    infra_head.Title = "Infrastructure Head"
+    cto.add_member(infra_head)
+    
+    cloud_manager = OrgTree()
+    cloud_manager.Name = "Dhawal"
+    cloud_manager.Title = "Cloud Manager"
+    infra_head.add_member(cloud_manager)
+    
+    app_manager = OrgTree()
+    app_manager.Name = "Abhijit"
+    app_manager.Title = "App Manager"
+    infra_head.add_member(app_manager)
+    
+    application_head = OrgTree()
+    application_head.Name = "Aamir"
+    application_head.Title = "Application Head"
+    cto.add_member(application_head)    
+    
+    hr_head = OrgTree()
+    hr_head.Name = "Gels"
+    hr_head.Title = "HR Head"
+    my_org.add_member(hr_head)
+    
+    recruitment_manager = OrgTree()
+    recruitment_manager.Name = "Peter"
+    recruitment_manager.Title = "Recruitment Manager"
+    hr_head.add_member(recruitment_manager) 
+    
+    policy_manager = OrgTree()
+    policy_manager.Name = "Waqas"
+    policy_manager.Title = "Policy Manager"
+    hr_head.add_member(policy_manager) 
+    
+    # print(app_manager.get_level())
+    my_org.print_org_tree(type="name")
+    print("----"*25)
+    my_org.print_org_tree(type="title")
+    print("----"*25)
+    my_org.print_org_tree(type="both")
+    
+    
+        
